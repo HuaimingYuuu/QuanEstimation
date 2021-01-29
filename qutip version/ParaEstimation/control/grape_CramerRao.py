@@ -41,7 +41,7 @@ class control:
           internal function
           '''
           H0 = self.freeHamiltonian
-          tj = (t-self.times[0])/(self.times[1]-self.times[0])
+          tj = int((t-self.times[0]) / (self.times[1]-self.times[0]))
           dt = self.times[1]-self.times[0]
 
           for hn in range(0, len(self.control_Hamiltonian)):
