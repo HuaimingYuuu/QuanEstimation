@@ -189,7 +189,7 @@ class control:
                   term2 = -2 * (dt * dt) * (L1 * (Mj2mat+Mj3mat)).tr()
                   delta = np.real(term1 + term2)
 
-                  Hc_ki[ti] += Hc_ki[ti] + self.epsilon * delta
+                  Hc_ki[ti] += self.epsilon * delta
 
               Hc_coeff[ki] = Hc_ki
 
