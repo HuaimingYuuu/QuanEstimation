@@ -208,7 +208,7 @@ class control:
           num = len(self.times)
           dim = self.freeHamiltonian.dims[0][0]
           dt = self.times[1] - self.times[0]
-          dL = [Qobj((self.Hamiltonian_derivative[i]).full()) for i in range(0, len(self.Hamiltonian_derivative))]
+          dL = [Qobj(liouvillian(self.Hamiltonian_derivative[i]).full()) for i in range(0, len(self.Hamiltonian_derivative))]
           D = [[[] for i in range(0, num + 1)] for k in range(0, num + 1)]
 
           rhovec = [[] for i in range(0, num)]
@@ -306,10 +306,10 @@ class control:
               Hc_ki = Hc_coeff[ki]
               for ti in range(0, num):
                   Mj1 = 1.j * D[ti+1][num-1] * Hk * self.rho[ti]
-                  Mj1mat = Qobj(vec2mat(Mj1.fulll()))
+                  Mj1mat = Qobj(vec2mat(Mj1.full()))
                   delta = 0.
 
-                  for para_i in range(0, len(self.control_Hamiltonian)):
+                  for para_i in range(0, len(self.Hamiltonian_derivative)):
                       dH0_i = 1.j * Qobj(liouvillian(self.Hamiltonian_derivative[para_i]).full)
                       Mj2 = Qobj(np.zeros((dim*dim, 1)))
                       for ri in range(0,ti+1):
@@ -339,7 +339,7 @@ class control:
                                     - (dt**2) * (L1[0] * (M2_2para[1] + M3_2para[1])).tr()
                      delta += - np.real(2 * grad_offdiag * CFIM_temp[0, 1]/CFIM_temp.tr())
 
-                  Hc_ki[ti] += Hc_ki[ti] + self.epsilon * delta
+                  Hc_ki[ti] += self.epsilon * delta
               Hc_coeff[ki] = Hc_ki
           self.control_coefficients = Hc_coeff
 
@@ -387,7 +387,7 @@ class control:
 
                  self.propagation_multiple()
                  rho0 = Qobj(vec2mat(self.rho[num - 1].full()))
-                 drho0 = Qobj(vec2mat(self.rho_derivative[num - 1].full()))
+                 drho0 = [Qobj(vec2mat(self.rho_derivative[num - 1][para_i].full())) for para_i in range(0,len(self.Hamiltonian_derivative))]
                  cfim_ini = CR.CFIM(rho0, drho0, M)
                  if obj_fun == 'f0':
                     obj_ini = 1.0 / np.trace(1.0 / cfim_ini.full())
@@ -400,7 +400,7 @@ class control:
                     self.gradient_CFIM(M, obj_fun)
                     self.propagation_multiple()
                     rho1 = Qobj(vec2mat(self.rho[num - 1].full()))
-                    drho1 = Qobj(vec2mat(self.rho_derivative[num - 1].full()))
+                    drho1 = [Qobj(vec2mat(self.rho_derivative[num - 1][para_i].full())) for para_i in range(0,len(self.Hamiltonian_derivative))]
                     cfim_now = CR.CFIM(rho1, drho1, M)
                     if obj_fun == 'f0':
                         obj_now = 1.0 / np.trace(1.0 / cfim_now.full())
