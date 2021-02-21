@@ -257,7 +257,7 @@ class control:
           1) updated values of self.control_coefficients.
           Notice: To run this function, the function 'propagation_multiple()' has to be run first.
           '''
-          if len(self.control_Hamiltonian) > 2 and obj_fun == 'exact':
+          if len(self.Hamiltonian_derivative) > 2 and obj_fun == 'exact':
               raise TypeError('the "exact" mode is only valid for two-parameter estimations!')
 
           num = len(self.times)
